@@ -64,8 +64,8 @@ export class AppService {
     });
 
     if (balance < ethers.utils.parseEther("1")) {
-      return { success: false, message: "Faucet is empty" };
-      throw new Error("Faucet is empty");
+      return { success: false, message: "Faucet is empty. Try again" };
+      throw new Error("Faucet is empty. Try again");
     }
 
     try {
