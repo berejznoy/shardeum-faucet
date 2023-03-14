@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { ethers, Signer } from "ethers";
-import * as NodeCache from "node-cache";
-import {config} from "dotenv";
+import NodeCache from "node-cache";
 
-config();
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require("dotenv").config();
 
 interface IQuery {
   success: boolean;
