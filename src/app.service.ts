@@ -51,7 +51,7 @@ export class AppService {
       return { success: false, message: "Invalid address" };
     }
 
-    if (await this.cache.get(_address)) {
+    if (this.cache.get(_address)) {
       return {
         success: false,
         message: "Please wait for 12 hours to claim again",
