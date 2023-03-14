@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { ethers, Signer } from "ethers";
-import NodeCache from "node-cache";
+import * as NodeCache from "node-cache";
+import {config} from "dotenv";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require("dotenv").config();
+config();
 
 interface IQuery {
   success: boolean;
@@ -51,7 +51,7 @@ export class AppService {
       return { success: false, message: "Invalid address" };
     }
 
-    if (this.cache.get(_address)) {
+    if (await this.cache.get(_address)) {
       return {
         success: false,
         message: "Please wait for 12 hours to claim again",
@@ -71,7 +71,7 @@ export class AppService {
     try {
       const res = await this.signer.sendTransaction({
         to: _address,
-        value: ethers.utils.parseEther("11"),
+        value: ethers.utils.parseEther("1"),
       });
       this.cache.set(_address, "active");
       return { success: true, message: res.hash };
