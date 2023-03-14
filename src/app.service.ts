@@ -18,7 +18,7 @@ export class AppService {
 
   constructor() {
     // 1. Import cache
-    this.cache = new NodeCache({ stdTTL: 1800 });
+    this.cache = new NodeCache({ stdTTL: 43200 });
     // 2. Define network configurations
     const providerRPC = {
       shardeum: {
@@ -71,7 +71,7 @@ export class AppService {
     try {
       const res = await this.signer.sendTransaction({
         to: _address,
-        value: ethers.utils.parseEther("1"),
+        value: ethers.utils.parseEther("11"),
       });
       this.cache.set(_address, "active");
       return { success: true, message: res.hash };
