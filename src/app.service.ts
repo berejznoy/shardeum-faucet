@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ethers, Signer } from "ethers";
+import NodeCache from "node-cache";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
@@ -13,11 +14,11 @@ export class AppService {
   // init
   provider: ethers.providers.Provider;
   signer: Signer;
-  timeout: { [address: string]: number } = {
-    "0x9482D18c937ddB9D9b85697c9b31A8032F9f8712": 1673849821252,
-  };
+  cache: NodeCache;
 
   constructor() {
+    // 1. Import cache
+    this.cache = new NodeCache({ stdTTL: 1800 });
     // 2. Define network configurations
     const providerRPC = {
       shardeum: {
@@ -50,32 +51,32 @@ export class AppService {
       return { success: false, message: "Invalid address" };
     }
 
-    if (
-      this.timeout[_address] &&
-      this.timeout[_address] > Date.now().valueOf()
-    ) {
-      return { success: false, message: "Faucet is on cooldown" };
+    if (this.cache.get(_address)) {
+      return {
+        success: false,
+        message: "Please wait for 12 hours to claim again",
+      };
     }
 
     const balance = await this.signer.getBalance().catch((err) => {
-      return { success: false, message: "RPC Error" };
+      return { success: false, message: "RPC Error. Try again" };
       throw new Error(err);
     });
 
     if (balance < ethers.utils.parseEther("1")) {
-      return { success: false, message: "Faucet is empty :(" };
-      throw new Error("Faucet is empty :(");
+      return { success: false, message: "Faucet is empty" };
+      throw new Error("Faucet is empty");
     }
 
     try {
       const res = await this.signer.sendTransaction({
         to: _address,
-        value: ethers.utils.parseEther("11"),
+        value: ethers.utils.parseEther("1"),
       });
-      this.timeout[_address] = (Date.now() as number) + 43200000;
+      this.cache.set(_address, "active");
       return { success: true, message: res.hash };
     } catch (e) {
-      return { success: false, message: "RPC Error" };
+      return { success: false, message: "RPC Error. Try again" };
       throw new Error(e);
     }
   }
