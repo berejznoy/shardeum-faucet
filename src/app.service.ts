@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import {CACHE_MANAGER, Inject, Injectable} from "@nestjs/common";
 import { ethers, Signer } from "ethers";
-import NodeCache from "node-cache";
+import { Cache } from 'cache-manager';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
@@ -11,14 +11,11 @@ interface IQuery {
 }
 @Injectable()
 export class AppService {
+
   // init
   provider: ethers.providers.Provider;
   signer: Signer;
-  cache: NodeCache;
-
-  constructor() {
-    // 1. Import cache
-    this.cache = new NodeCache({ stdTTL: 43200 });
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
     // 2. Define network configurations
     const providerRPC = {
       shardeum: {
@@ -51,7 +48,7 @@ export class AppService {
       return { success: false, message: "Invalid address" };
     }
 
-    if (this.cache.get(_address)) {
+    if (await this.cacheManager.get(_address)) {
       return {
         success: false,
         message: "Please wait for 12 hours to claim again",
@@ -73,7 +70,7 @@ export class AppService {
         to: _address,
         value: ethers.utils.parseEther("1"),
       });
-      this.cache.set(_address, "active");
+      await this.cacheManager.set(_address, true, 43200);
       return { success: true, message: res.hash };
     } catch (e) {
       return { success: false, message: "RPC Error. Try again" };
