@@ -14,7 +14,7 @@ export class AppService {
   // init
   provider: ethers.providers.Provider;
   signer: Signer;
-  cache: any;
+  cache: NodeCache;
 
   constructor() {
     // 1. Import cache
