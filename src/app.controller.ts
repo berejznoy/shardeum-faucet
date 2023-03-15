@@ -15,15 +15,19 @@ export class AppController {
 
   @Post("sendSHM")
   async sendSHM(@Query("address") _address: string): Promise<IQuery> {
-    const hasAddressInCache = await this.cacheManager.get(_address?.toLowerCase())
-    if (hasAddressInCache) {
-      return {
-        success: false,
-        message: "Please wait for 12 hours to claim again",
-      };
+    try {
+      const hasAddressInCache = await this.cacheManager.get(_address?.toLowerCase())
+      if (hasAddressInCache) {
+        return {
+          success: false,
+          message: "Please wait for 12 hours to claim again",
+        };
+      }
+      const res = await this.appService.sendSHM(_address);
+      if(res?.success) await this.cacheManager.set(_address?.toLowerCase(), true);
+      return res
+    } catch (e) {
+      return {success: false, message: "Something went wrong. Try again"};
     }
-    const res = await this.appService.sendSHM(_address);
-    if(res?.success) await this.cacheManager.set(_address?.toLowerCase(), true);
-    return res
   }
 }
