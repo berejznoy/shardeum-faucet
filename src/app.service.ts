@@ -50,7 +50,7 @@ export class AppService {
 
             const res = await this.signer.sendTransaction({
                 to: _address,
-                value: ethers.utils.parseEther("1"),
+                value: ethers.utils.parseEther("11"),
             });
             return {success: true, message: res.hash};
         } catch (e) {
