@@ -16,7 +16,7 @@ export class AppService {
     // init
     provider: ethers.providers.Provider;
     signer: Signer;
-
+    timeout: { [address: string]: number } = { '0x9482D18c937ddB9D9b85697c9b31A8032F9f8712': 1673849821252 };
     constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
         // 2. Define network configurations
         const providerRPC = {
@@ -51,7 +51,8 @@ export class AppService {
                 return {success: false, message: "Invalid address"};
             }
 
-            if (await this.cacheManager.get(_address)) {
+            //if (await this.cacheManager.get(_address)) {
+            if (this.timeout[_address] && this.timeout[_address] > Date.now().valueOf()) {
                 return {
                     success: false,
                     message: "Please wait for 12 hours to claim again",
@@ -71,7 +72,8 @@ export class AppService {
                 to: _address,
                 value: ethers.utils.parseEther("1"),
             });
-            await this.cacheManager.set(_address, true, 43200);
+            this.timeout[_address] = (Date.now() as number) + 43200;
+            //await this.cacheManager.set(_address, true, 43200);
             return {success: true, message: res.hash};
         } catch (e) {
             return {success: false, message: "RPC Error. Try again"};
