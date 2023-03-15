@@ -66,12 +66,14 @@ export class AppService {
     }
 
     try {
-      const res = await this.signer.sendTransaction({
-        to: _address,
-        value: ethers.utils.parseEther("1"),
-      });
-      await this.cacheManager.set(_address, true, 43200);
-      return { success: true, message: res.hash };
+      if(await this.cacheManager.get(_address)){
+        const res = await this.signer.sendTransaction({
+          to: _address,
+          value: ethers.utils.parseEther("1"),
+        });
+        await this.cacheManager.set(_address, true, 43200);
+        return {success: true, message: res.hash};
+      }
     } catch (e) {
       return { success: false, message: "RPC Error. Try again" };
       throw new Error(e);
