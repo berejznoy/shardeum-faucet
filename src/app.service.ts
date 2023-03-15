@@ -48,13 +48,6 @@ export class AppService {
       return { success: false, message: "Invalid address" };
     }
 
-    if (await this.cacheManager.get(_address)) {
-      return {
-        success: false,
-        message: "Please wait for 12 hours to claim again",
-      };
-    }
-
     const balance = await this.signer.getBalance().catch((err) => {
       return { success: false, message: "RPC Error. Try again" };
       throw new Error(err);
@@ -66,7 +59,13 @@ export class AppService {
     }
 
     try {
-      if(await this.cacheManager.get(_address)){
+      if (await this.cacheManager.get(_address)) {
+        return {
+          success: false,
+          message: "Please wait for 12 hours to claim again",
+        };
+      }
+      else {
         const res = await this.signer.sendTransaction({
           to: _address,
           value: ethers.utils.parseEther("1"),
