@@ -23,7 +23,7 @@ export class AppController {
       };
     }
     const res = await this.appService.sendSHM(_address);
-    if(res?.success) await this.cacheManager.set(_address, true, 43200);
+    if(res?.success) await this.cacheManager.set(_address, true, 43200000);
     return res
   }
 }
