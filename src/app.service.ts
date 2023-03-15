@@ -40,9 +40,6 @@ export class AppService {
 
     async sendSHM(_address: string): Promise<IQuery> {
         try {
-
-            return {success: false, message: "Faucet is empty. Try again"};
-
             if (!_address || !ethers.utils.isAddress(_address)) {
                 return {success: false, message: "Invalid address"};
             }

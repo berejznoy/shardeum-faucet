@@ -15,7 +15,7 @@ export class AppController {
 
   @Post("sendSHM")
   async sendSHM(@Query("address") _address: string): Promise<IQuery> {
-    const hasAddressInCache = await this.cacheManager.get(_address)
+    const hasAddressInCache = await this.cacheManager.get(_address?.toLowerCase())
     if (hasAddressInCache) {
       return {
         success: false,
@@ -23,7 +23,7 @@ export class AppController {
       };
     }
     const res = await this.appService.sendSHM(_address);
-    if(res?.success) await this.cacheManager.set(_address, true);
+    if(res?.success) await this.cacheManager.set(_address?.toLowerCase(), true);
     return res
   }
 }
