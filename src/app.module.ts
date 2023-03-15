@@ -7,7 +7,8 @@ import {redisStore} from 'cache-manager-redis-store';
   imports: [CacheModule.register({
     store: redisStore as any,
     url: 'redis://skaarj:S32069257b!@redis-16445.c11.us-east-1-2.ec2.cloud.redislabs.com:16445',
-    isGlobal: true
+    isGlobal: true,
+    ttl: 43200
   })],
   controllers: [AppController],
   providers: [AppService],
