@@ -66,7 +66,7 @@ export class AppService {
       return { success: false, message: "Faucet is empty. Try again" };
       throw new Error("Faucet is empty. Try again");
     }
-    let res = await this.signer
+    await this.signer
         .sendTransaction({
           to: _address,
           value: ethers.utils.parseEther("1"),
