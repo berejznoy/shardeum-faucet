@@ -1,5 +1,6 @@
-import { Controller, Post, Query } from "@nestjs/common";
+import {CACHE_MANAGER, Controller, Inject, Post, Query} from "@nestjs/common";
 import { AppService } from "./app.service";
+import {Cache} from "cache-manager";
 
 interface IQuery {
   success: boolean;
@@ -7,10 +8,22 @@ interface IQuery {
 }
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(
+      @Inject(CACHE_MANAGER) private cacheManager: Cache,
+      private readonly appService: AppService
+  ) { }
 
   @Post("sendSHM")
-  sendSHM(@Query("address") _address: string): Promise<IQuery> {
-    return this.appService.sendSHM(_address);
+  async sendSHM(@Query("address") _address: string): Promise<IQuery> {
+    const hasAddressInCache = await this.cacheManager.get(_address)
+    if (hasAddressInCache) {
+      return {
+        success: false,
+        message: "Please wait for 12 hours to claim again",
+      };
+    }
+    const res = await this.appService.sendSHM(_address);
+    if(res?.success) await this.cacheManager.set(_address, true, 43200);
+    return res
   }
 }

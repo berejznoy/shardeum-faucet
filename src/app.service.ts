@@ -1,6 +1,6 @@
 import {CACHE_MANAGER, Inject, Injectable} from "@nestjs/common";
 import {ethers, Signer} from "ethers";
-import {Cache} from 'cache-manager';
+
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
@@ -16,7 +16,7 @@ export class AppService {
     provider: ethers.providers.Provider;
     signer: Signer;
 
-    constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
+    constructor() {
 
         const providerRPC = {
             shardeum: {
@@ -43,15 +43,6 @@ export class AppService {
             if (!_address || !ethers.utils.isAddress(_address)) {
                 return {success: false, message: "Invalid address"};
             }
-
-            const hasAddressInCache = await this.cacheManager.get(_address)
-            if (hasAddressInCache) {
-                return {
-                    success: false,
-                    message: "Please wait for 12 hours to claim again",
-                };
-            }
-
             const balance = await this.signer.getBalance()
             if (balance < ethers.utils.parseEther("1")) {
                 return {success: false, message: "Faucet is empty. Try again"};
@@ -61,9 +52,6 @@ export class AppService {
                 to: _address,
                 value: ethers.utils.parseEther("1"),
             });
-
-            await this.cacheManager.set(_address, true, 43200);
-
             return {success: true, message: res.hash};
         } catch (e) {
             return {success: false, message: "Something went wrong. Try again"};
