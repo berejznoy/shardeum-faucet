@@ -31,10 +31,12 @@ export class AppController {
       if(status !== 'requested') {
         const res = await this.appService.sendSHM(_address);
         if(res?.success) await this.cacheManager.set(_address?.toLowerCase(), "sent");
+        if(!res?.success) await this.cacheManager.del(_address?.toLowerCase());
         return res
       }
       return {success: false, message: "Your previous request is still in progress"};
     } catch (e) {
+      await this.cacheManager.del(_address?.toLowerCase());
       return {success: false, message: "Something went wrong. Try again"};
     }
   }
