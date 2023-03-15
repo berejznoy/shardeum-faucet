@@ -3,10 +3,13 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import {redisStore} from 'cache-manager-redis-store';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require("dotenv").config();
+
 @Module({
   imports: [CacheModule.register({
     store: redisStore as any,
-    url: 'redis://skaarj:S32069257b!@redis-16445.c11.us-east-1-2.ec2.cloud.redislabs.com:16445',
+    url: process.env.REDIS_URL,
     isGlobal: true,
     ttl: 43200
   })],
