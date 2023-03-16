@@ -1,6 +1,6 @@
 import {CACHE_MANAGER, Inject, Injectable} from "@nestjs/common";
 import {ethers, Signer} from "ethers";
-
+import axios from 'axios'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
@@ -56,5 +56,12 @@ export class AppService {
         } catch (e) {
             return {success: false, message: "Something went wrong. Try again"};
         }
+    }
+
+    async validateCaptcha(token) {
+        const res = await axios.post(
+            `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET_KEY}&response=${token}`
+        );
+        return  {success: res?.data?.success, message: res?.data?.success ? 'Success': 'Fail'}
     }
 }

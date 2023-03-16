@@ -1,4 +1,4 @@
-import {CACHE_MANAGER, Controller, Inject, Post, Query} from "@nestjs/common";
+import {Body, CACHE_MANAGER, Controller, Inject, Post, Query} from "@nestjs/common";
 import { AppService } from "./app.service";
 import {Cache} from "cache-manager";
 
@@ -39,5 +39,10 @@ export class AppController {
       await this.cacheManager.del(_address?.toLowerCase());
       return {success: false, message: "Something went wrong. Try again"};
     }
+  }
+
+  @Post("validate")
+  async validate(@Body("token") token: {token: string}): Promise<IQuery> {
+    return this.appService.validateCaptcha(token)
   }
 }
