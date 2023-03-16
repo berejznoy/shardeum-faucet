@@ -42,7 +42,7 @@ export class AppController {
   }
 
   @Post("validate")
-  async validate(@Body("token") token: {token: string}): Promise<IQuery> {
+  async validate(@Query("token") token: string): Promise<IQuery> {
     return this.appService.validateCaptcha(token)
   }
 }
