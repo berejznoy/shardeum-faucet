@@ -25,7 +25,14 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("docs", app, document);
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'https://get-shm.online',
+      'https://shardeum-faucet-front.vercel.app',
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  });
   await app.listen(3000);
 
   if (module.hot) {
