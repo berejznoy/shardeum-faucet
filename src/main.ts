@@ -30,6 +30,7 @@ async function bootstrap() {
       'https://get-shm.online',
       'https://shardeum-faucet-front.vercel.app',
     ],
+    allowedHeaders: '*',
     methods: ["GET", "POST"],
     credentials: true,
   });
