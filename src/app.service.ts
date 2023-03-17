@@ -43,9 +43,15 @@ export class AppService {
             if (!_address || !ethers.utils.isAddress(_address)) {
                 return {success: false, message: "Invalid address"};
             }
-            const balance = await this.signer.getBalance()
-            if (balance < ethers.utils.parseEther("1")) {
-                return {success: false, message: "Faucet is empty. Try again"};
+
+            // const balance = await this.signer.getBalance()
+            // if (balance < ethers.utils.parseEther("1")) {
+            //     return {success: false, message: "Faucet is empty. Try again"};
+            // }
+
+            const balance = await this.getFaucetBalance(process.env.FAUCET_ADDRESS)
+            if(Number(balance) < 12 ) {
+                return {success: false, message: "Faucet is empty. Try again"}
             }
 
             const res = await this.signer.sendTransaction({
@@ -54,7 +60,7 @@ export class AppService {
             });
             return {success: true, message: res.hash};
         } catch (e) {
-            return {success: false, message: "Something went wrong. Try again"};
+            throw new Error(e)
         }
     }
 
@@ -70,6 +76,6 @@ export class AppService {
         const res = await axios.get(
             `https://explorer-sphinx.shardeum.org/api/address?address=${_address}&accountType=0`
         );
-        return Number(BigInt(`0x${res?.data?.accounts?.[0]?.account?.balance}`) / BigInt(10 ** 18)).toFixed(2) + " SHM";
+        return Number(BigInt(`0x${res?.data?.accounts?.[0]?.account?.balance}`) / BigInt(10 ** 18)).toFixed(2);
     }
 }
