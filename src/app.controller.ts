@@ -1,4 +1,4 @@
-import {Body, CACHE_MANAGER, Controller, Inject, Post, Query} from "@nestjs/common";
+import {CACHE_MANAGER, Controller, Get, Inject, Post, Query} from "@nestjs/common";
 import { AppService } from "./app.service";
 import {Cache} from "cache-manager";
 
@@ -44,5 +44,9 @@ export class AppController {
   @Post("validate")
   async validate(@Query("token") token: string): Promise<IQuery> {
     return this.appService.validateCaptcha(token)
+  }
+  @Get("balance")
+  async getFaucetBalance(@Query("address") _address: string): Promise<any> {
+    return this.appService.getFaucetBalance(_address)
   }
 }

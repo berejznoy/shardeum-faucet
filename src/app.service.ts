@@ -1,4 +1,4 @@
-import {CACHE_MANAGER, Inject, Injectable} from "@nestjs/common";
+import {Injectable} from "@nestjs/common";
 import {ethers, Signer} from "ethers";
 import axios from 'axios'
 
@@ -58,10 +58,18 @@ export class AppService {
         }
     }
 
-    async validateCaptcha(token: string) {
+    async validateCaptcha(_token: string) {
         const res = await axios.post(
-            `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET_KEY}&response=${token}`
+            `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET_KEY}&response=${_token}`
         );
-        return  {success: res?.data?.success, message: res?.data?.success ? 'Success': 'Fail'}
+        return {success: res?.data?.success, message: res?.data?.success ? 'Success' : 'Fail'}
+    }
+
+
+    async getFaucetBalance(_address) {
+        const res = await axios.get(
+            `https://explorer-sphinx.shardeum.org/api/address?address=${_address}&accountType=0`
+        );
+        return Number(BigInt(`0x${res?.data?.accounts?.[0]?.account?.balance}`) / BigInt(10 ** 18)).toFixed(2) + " SHM";
     }
 }
