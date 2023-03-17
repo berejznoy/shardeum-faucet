@@ -19,7 +19,7 @@ export class AppController {
       const status: "requested" | "sent" = await this.cacheManager.get(_address?.toLowerCase())
 
       if(status !== 'sent') {
-        await this.cacheManager.set(_address?.toLowerCase(), "requested", {ttl: 300});
+        await this.cacheManager.set(_address?.toLowerCase(), "requested", {ttl: 30});
       }
 
       if (status === 'sent') {
@@ -34,7 +34,7 @@ export class AppController {
         if(!res?.success) await this.cacheManager.del(_address?.toLowerCase());
         return res
       }
-      return {success: false, message: "Your previous request is still in progress. Try again in 5 minutes"};
+      return {success: false, message: "Your previous request is still in progress. Try again in 30 seconds"};
     } catch (e) {
       await this.cacheManager.del(_address?.toLowerCase());
       return {success: false, message: "Something went wrong. Try again"};
