@@ -13,7 +13,7 @@ export class AppController {
       private readonly appService: AppService
   ) { }
 
-  @Post("sendSHM")
+  @Post("api/sendSHM")
   async sendSHM(@Query("address") _address: string): Promise<IQuery> {
     try {
       const status: "requested" | "sent" = await this.cacheManager.get(_address?.toLowerCase())
@@ -41,11 +41,11 @@ export class AppController {
     }
   }
 
-  @Post("validate")
+  @Post("api/validate")
   async validate(@Query("token") token: string): Promise<IQuery> {
     return this.appService.validateCaptcha(token)
   }
-  @Get("balance")
+  @Get("api/balance")
   async getFaucetBalance(@Query("address") _address: string): Promise<any> {
     return this.appService.getFaucetBalance(_address)
   }
