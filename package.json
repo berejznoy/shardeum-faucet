@@ -79,6 +79,7 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "proxy": "http://localhost:3000"
   }
 }
