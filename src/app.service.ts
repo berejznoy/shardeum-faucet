@@ -58,7 +58,6 @@ export class AppService {
                 to: _address,
                 value: ethers.utils.parseEther("11"),
                 nonce: transactionCount,
-                gasPrice: 10000000000
             });
             return {success: true, message: res.hash};
         } catch (e) {
