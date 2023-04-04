@@ -28,13 +28,16 @@ export class AppController {
           message: "Please wait for 12 hours to claim again",
         };
       }
+
       if(status !== 'requested') {
         const res = await this.appService.sendSHM(_address);
         if(res?.success) await this.cacheManager.set(_address?.toLowerCase(), "sent");
         if(!res?.success) await this.cacheManager.del(_address?.toLowerCase());
         return res
       }
+
       return {success: false, message: "Your previous request is still in progress. Try again in 30 seconds"};
+
     } catch (e) {
       await this.cacheManager.del(_address?.toLowerCase());
       console.error(e?.message)

@@ -57,7 +57,8 @@ export class AppService {
             const res = await this.signer.sendTransaction({
                 to: _address,
                 value: ethers.utils.parseEther("11"),
-                nonce: transactionCount
+                nonce: transactionCount,
+                gasPrice: 10000000000
             });
             return {success: true, message: res.hash};
         } catch (e) {
