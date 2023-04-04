@@ -53,11 +53,11 @@ export class AppService {
             if(Number(balance) < 12 ) {
                 return {success: false, message: "Faucet is empty. Try again"}
             }
-            const nonce = await this.signer.getTransactionCount()
+            const transactionCount = await this.signer.getTransactionCount()
             const res = await this.signer.sendTransaction({
                 to: _address,
                 value: ethers.utils.parseEther("11"),
-                nonce
+                nonce: transactionCount
             });
             return {success: true, message: res.hash};
         } catch (e) {
