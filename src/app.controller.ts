@@ -37,6 +37,7 @@ export class AppController {
       return {success: false, message: "Your previous request is still in progress. Try again in 30 seconds"};
     } catch (e) {
       await this.cacheManager.del(_address?.toLowerCase());
+      console.error(e?.message)
       return {success: false, message: "Something went wrong. Try again"};
     }
   }
